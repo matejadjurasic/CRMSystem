@@ -4,6 +4,7 @@ using CRMSystemAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CRMSystemAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240810140509_SeededAdminAndRoles")]
+    partial class SeededAdminAndRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,14 +130,12 @@ namespace CRMSystemAPI.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a792d650-a91f-4552-b68c-95d4d5c1a655",
+                            ConcurrencyStamp = "51686b26-01e2-4d43-9ff3-ff4a6a0214b0",
                             Email = "admin@email.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Admin",
-                            NormalizedEmail = "ADMIN@EMAIL.COM",
-                            NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOCTK0o3oXDrUbPbUTwIVJ2C8EW7WiRZ7d0tEgP8s655rucoTVlS93XEgvCPxJB+IA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDKIDuic5PzrvJQVxdACMXFj8fSc3Sl9rVbhc6F/BIhSP/Si8YPv3n/tmWgYDcsrVw==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "admin"
@@ -174,16 +175,12 @@ namespace CRMSystemAPI.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "1",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
+                            Name = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "2",
-                            Name = "Client",
-                            NormalizedName = "CLIENT"
+                            Name = "Client"
                         });
                 });
 
