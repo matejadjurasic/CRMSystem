@@ -2,6 +2,7 @@ using CRMSystemAPI.Data;
 using CRMSystemAPI.MapperProfiles;
 using CRMSystemAPI.Models.DatabaseModels;
 using CRMSystemAPI.Services.AuthServices;
+using CRMSystemAPI.Services.EmailServices;
 using CRMSystemAPI.Services.ProjectServices;
 using CRMSystemAPI.Services.TokenServices;
 using CRMSystemAPI.Services.UserServices;
@@ -37,6 +38,14 @@ builder.Services.AddIdentity<User, Role>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 6;
+
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+
+    options.User.RequireUniqueEmail = true;
+
+    options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultProvider;
+    options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultProvider;
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
@@ -54,6 +63,7 @@ builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.AddAuthentication(options =>
 {
