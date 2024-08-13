@@ -1,6 +1,6 @@
-﻿using CRMSystemAPI.Models;
+﻿using CRMSystemAPI.Models.DatabaseModels;
 
-namespace CRMSystemAPI.Auth.Tokens
+namespace CRMSystemAPI.Services.TokenServices
 {
     public interface ITokenService
     {

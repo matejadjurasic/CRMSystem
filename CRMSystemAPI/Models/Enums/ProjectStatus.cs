@@ -1,4 +1,4 @@
-﻿namespace CRMSystemAPI.Models
+﻿namespace CRMSystemAPI.Models.Enums
 {
     public enum ProjectStatus
     {

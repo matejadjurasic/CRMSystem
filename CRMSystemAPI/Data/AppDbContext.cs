@@ -1,11 +1,12 @@
-﻿using CRMSystemAPI.Models;
+﻿using CRMSystemAPI.Models.DatabaseModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRMSystemAPI.Data
 {
-    public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
+    public class AppDbContext : IdentityDbContext<User, Role, int, IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>,
+        IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -16,29 +17,47 @@ namespace CRMSystemAPI.Data
         {
             base.OnModelCreating(modelBuilder);
 
+
             int ADMIN_ID = 1;
             int ADMIN_ROLE_ID = 1;
             int CLIENT_ROLE_ID = 2;
 
-            modelBuilder.Entity<IdentityUserLogin<int>>().HasKey(iul => new { iul.LoginProvider, iul.ProviderKey, iul.UserId });
-            modelBuilder.Entity<IdentityUserRole<int>>().HasKey(iur => new { iur.UserId, iur.RoleId });
-            modelBuilder.Entity<IdentityUserToken<int>>().HasKey(iut => new { iut.UserId, iut.LoginProvider, iut.Name });
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Projects)
+            modelBuilder.Entity<User>(b =>
+            {
+                b.HasMany(u => u.Projects)
                 .WithOne(p => p.User)
                 .HasForeignKey(p => p.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+                b.HasMany(e => e.UserRoles)
+                .WithOne(e => e.User)
+                .HasForeignKey(ur => ur.UserId)
                 .IsRequired();
 
-            modelBuilder.Entity<IdentityRole<int>>().HasData(
-                    new IdentityRole<int>
+                b.HasIndex(u => u.Email)
+                .IsUnique();
+            });
+
+
+            modelBuilder.Entity<Role>(b =>
+            {
+                b.HasMany(e => e.UserRoles)
+                .WithOne(e => e.Role)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired();
+            });
+
+            modelBuilder.Entity<Role>().HasData(
+                    new Role
                     {
                         Name = "Admin",
                         Id = ADMIN_ROLE_ID,
                         NormalizedName = "ADMIN",
                         ConcurrencyStamp = ADMIN_ROLE_ID.ToString()
                     },
-                    new IdentityRole<int>
+                    new Role
                     {
                         Name = "Client",
                         Id = CLIENT_ROLE_ID,
@@ -62,7 +81,7 @@ namespace CRMSystemAPI.Data
 
             modelBuilder.Entity<User>().HasData(appUser);
 
-            modelBuilder.Entity<IdentityUserRole<int>>().HasData(new IdentityUserRole<int>
+            modelBuilder.Entity<UserRole>().HasData(new UserRole
             {
                 RoleId = ADMIN_ROLE_ID,
                 UserId = ADMIN_ID
