@@ -1,18 +1,28 @@
-using CRMSystemAPI.Auth.Tokens;
 using CRMSystemAPI.Data;
-using CRMSystemAPI.Models;
+using CRMSystemAPI.MapperProfiles;
+using CRMSystemAPI.Models.DatabaseModels;
+using CRMSystemAPI.Services.AuthServices;
+using CRMSystemAPI.Services.ProjectServices;
+using CRMSystemAPI.Services.TokenServices;
+using CRMSystemAPI.Services.UserServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -20,7 +30,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
+builder.Services.AddIdentity<User, Role>(options =>
 {   
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
@@ -30,9 +40,19 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 })
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
-
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<UserProfile>();
+    cfg.AddProfile<ProjectProfile>();
+}, AppDomain.CurrentDomain.GetAssemblies()); 
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddAuthentication(options =>

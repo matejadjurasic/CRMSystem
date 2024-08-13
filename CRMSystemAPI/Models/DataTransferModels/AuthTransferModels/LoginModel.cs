@@ -1,4 +1,4 @@
-﻿namespace CRMSystemAPI.Auth.AuthModels
+﻿namespace CRMSystemAPI.Models.DataTransferModels.AuthTransferModels
 {
     public class LoginModel
     {

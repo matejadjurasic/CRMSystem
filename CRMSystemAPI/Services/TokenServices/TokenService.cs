@@ -1,4 +1,4 @@
-﻿using CRMSystemAPI.Models;
+﻿using CRMSystemAPI.Models.DatabaseModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace CRMSystemAPI.Auth.Tokens
+namespace CRMSystemAPI.Services.TokenServices
 {
     public class TokenService : ITokenService
     {
