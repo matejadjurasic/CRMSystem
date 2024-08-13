@@ -29,5 +29,18 @@ namespace CRMSystemAPI.Controllers
             }
             return Ok(authResponse);
         }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromQuery] string email, [FromQuery] string token, [FromBody] ResetPasswordModel resetPasswordModel)
+        {
+            var result = await _authService.ResetPasswordAsync(email,token,resetPasswordModel.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok("Password has been reset successfully.");
+        }
     }
 }
