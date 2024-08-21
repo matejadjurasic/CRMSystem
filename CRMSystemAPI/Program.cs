@@ -1,4 +1,5 @@
 using CRMSystemAPI.Data;
+using CRMSystemAPI.Exceptions;
 using CRMSystemAPI.MapperProfiles;
 using CRMSystemAPI.Models.DatabaseModels;
 using CRMSystemAPI.Services.AuthServices;
@@ -118,7 +119,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

@@ -1,4 +1,5 @@
-﻿using CRMSystemAPI.Models.DatabaseModels;
+﻿using CRMSystemAPI.Exceptions;
+using CRMSystemAPI.Models.DatabaseModels;
 using CRMSystemAPI.Models.DataTransferModels.AuthTransferModels;
 using CRMSystemAPI.Services.EmailServices;
 using CRMSystemAPI.Services.TokenServices;
@@ -23,7 +24,7 @@ namespace CRMSystemAPI.Services.AuthServices
             _logger = logger;
         }
 
-        public async Task<AuthResponse?> AuthenticateUserAsync(LoginModel loginModel)
+        public async Task<AuthResponse> AuthenticateUserAsync(LoginModel loginModel)
         {
             var user = await _userManager.FindByEmailAsync(loginModel.Email);
             if (user != null && await _userManager.CheckPasswordAsync(user, loginModel.Password))
@@ -40,21 +41,17 @@ namespace CRMSystemAPI.Services.AuthServices
                     Roles = roles.ToList()
                 };
             }
-            return null;
+            throw new AuthenticationException("Invalid Credentials");
         }
 
-        public async Task<IdentityResult> ResetPasswordAsync(string email, string token, string newPassword)
+        public async Task ResetPasswordAsync(string email, string token, string newPassword)
         {
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
-            {
-                return IdentityResult.Failed(new IdentityError { Description = "Invalid email address." });
-            }
-
+            var user = await _userManager.FindByEmailAsync(email) ?? throw new NotFoundException("User not found");
             _logger.LogInformation($"Received token: {token}");
 
             var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
-            return result;
+            if (!result.Succeeded)
+                throw new AuthenticationException(result.Errors.FirstOrDefault().ToString());
         }
     }
 }
