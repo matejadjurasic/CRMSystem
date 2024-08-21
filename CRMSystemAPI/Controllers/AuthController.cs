@@ -23,23 +23,13 @@ namespace CRMSystemAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
         {
             var authResponse = await _authService.AuthenticateUserAsync(loginModel);
-            if (authResponse == null)
-            {
-                return Unauthorized("Invalid email or password");
-            }
             return Ok(authResponse);
         }
 
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromQuery] string email, [FromQuery] string token, [FromBody] ResetPasswordModel resetPasswordModel)
         {
-            var result = await _authService.ResetPasswordAsync(email,token,resetPasswordModel.NewPassword);
-
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
-
+            await _authService.ResetPasswordAsync(email,token,resetPasswordModel.NewPassword);
             return Ok("Password has been reset successfully.");
         }
     }

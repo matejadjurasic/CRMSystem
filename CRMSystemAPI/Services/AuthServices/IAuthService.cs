@@ -6,8 +6,8 @@ namespace CRMSystemAPI.Services.AuthServices
 {
     public interface IAuthService
     {
-        Task<AuthResponse?> AuthenticateUserAsync(LoginModel loginModel);
+        Task<AuthResponse> AuthenticateUserAsync(LoginModel loginModel);
         Task SendWelcomeEmailAsync(User user, string password);
-        Task<IdentityResult> ResetPasswordAsync(string email, string token, string newPassword);
+        Task ResetPasswordAsync(string email, string token, string newPassword);
     }
 }
