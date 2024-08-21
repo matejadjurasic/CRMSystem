@@ -40,15 +40,8 @@ namespace CRMSystemAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserReadDto>> GetUser(int id)
         {
-            try
-            {
-                var user = await _userService.GetUserByIdAsync(id);
-                return Ok(user);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var user = await _userService.GetUserByIdAsync(id);
+            return Ok(user);          
         }
 
         // PUT: api/Users/5
@@ -56,15 +49,8 @@ namespace CRMSystemAPI.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<UserReadDto>> PutUser(int id, [FromBody] UserUpdateDto updateUserDto)
         {
-            try
-            {
-                var updatedUser = await _userService.UpdateUserAsync(id, updateUserDto);
-                return Ok(updatedUser);
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var updatedUser = await _userService.UpdateUserAsync(id, updateUserDto);
+            return Ok(updatedUser);      
         }
 
         // POST: api/Users
@@ -72,21 +58,8 @@ namespace CRMSystemAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<UserReadDto>> PostUser([FromBody] UserCreateDto userCreateDto)
         {
-            try
-            {
-                var createdUser = await _userService.CreateUserAsync(userCreateDto);
-                createdUser.Roles.Clear();
-                createdUser.Roles.Add("Client");
-                return CreatedAtAction("GetUser", new { id = createdUser.Id }, createdUser);
-            }
-            catch (DuplicateEmailException ex)
-            {
-                return Conflict(new { message = ex.Message });
-            }
-            catch (Exception ex) 
-            { 
-                return BadRequest(ex.Message);
-            }
+            var createdUser = await _userService.CreateUserAsync(userCreateDto);
+            return CreatedAtAction("GetUser", new { id = createdUser.Id }, createdUser);
         }
 
 
@@ -94,15 +67,8 @@ namespace CRMSystemAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            try
-            {
-                await _userService.DeleteUserAsync(id);
-                return Ok("User successfully removed");
-            }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            await _userService.DeleteUserAsync(id);
+            return Ok("User successfully removed");
         }
 
     }

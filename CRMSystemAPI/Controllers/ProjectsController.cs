@@ -16,7 +16,7 @@ namespace CRMSystemAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProjectsController : ControllerBase
+    public class ProjectsController : BaseController
     {
         private readonly IProjectService _projectService;
 
@@ -30,14 +30,7 @@ namespace CRMSystemAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProjectReadDto>>> GetProjects()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-
-            var userProjects = await _projectService.GetUserProjectsAsync(int.Parse(userId));
+            var userProjects = await _projectService.GetUserProjectsAsync(CurrentUserId);
             return Ok(userProjects);
         }
 
@@ -56,19 +49,7 @@ namespace CRMSystemAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectReadDto>> GetProject(int id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-
-            var project = await _projectService.GetProjectByIdAsync(id, int.Parse(userId));
-            if (project == null)
-            {
-                return NotFound();
-            }
-
+            var project = await _projectService.GetProjectByIdAsync(id,CurrentUserId);
             return Ok(project);
         }
 
@@ -78,19 +59,7 @@ namespace CRMSystemAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProject(int id, [FromBody] ProjectUpdateDto updateProjectDto)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-
-            var updatedProject = await _projectService.UpdateProjectAsync(id, updateProjectDto, int.Parse(userId));
-            if (updatedProject == null)
-            {
-                return NotFound();
-            }
-
+            var updatedProject = await _projectService.UpdateProjectAsync(id, updateProjectDto, CurrentUserId);
             return Ok(updatedProject);
         }
 
@@ -100,22 +69,8 @@ namespace CRMSystemAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<ProjectReadDto>> PostProject([FromBody] ProjectCreateDto createProjectDto)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-
-            try
-            {
-                var createdProject = await _projectService.CreateProjectAsync(createProjectDto, int.Parse(userId));
-                return CreatedAtAction(nameof(GetProject), new { id = createdProject.Id }, createdProject);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var createdProject = await _projectService.CreateProjectAsync(createProjectDto, CurrentUserId);
+            return CreatedAtAction(nameof(GetProject), new { id = createdProject.Id }, createdProject);
         }
 
         // DELETE: api/Projects/5
@@ -123,19 +78,7 @@ namespace CRMSystemAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (userId == null)
-            {
-                return Unauthorized();
-            }
-
-            var success = await _projectService.DeleteProjectAsync(id, int.Parse(userId));
-            if (!success)
-            {
-                return NotFound();
-            }
-
+            await _projectService.DeleteProjectAsync(id, CurrentUserId);
             return Ok("Project deleted successfully.");
         }
     }

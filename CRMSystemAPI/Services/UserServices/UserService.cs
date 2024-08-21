@@ -71,14 +71,16 @@ namespace CRMSystemAPI.Services.UserServices
                 throw;
             }
 
-            return _mapper.Map<UserReadDto>(user);
+            var returnUser = _mapper.Map<UserReadDto>(user);
+            returnUser.Roles.Clear();
+            returnUser.Roles.Add("Client");
+
+            return returnUser;
         }
 
         public async Task<UserReadDto> UpdateUserAsync(int id, UserUpdateDto userUpdateDto)
         {
-            var user = await _userRepository.GetUserByIdAsync(id);
-            if (user == null) throw new NotFoundException("User not found");
-
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new NotFoundException("User not found");
             _mapper.Map(userUpdateDto, user);
 
             await _userRepository.UpdateUserAsync(user);
@@ -87,9 +89,7 @@ namespace CRMSystemAPI.Services.UserServices
 
         public async Task<bool> DeleteUserAsync(int id)
         {
-            var user = await _userRepository.GetUserByIdAsync(id);
-            if (user == null) throw new NotFoundException("User not found");
-
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new NotFoundException("User not found");
             await _userRepository.DeleteUserAsync(user);
             return true;
         }
