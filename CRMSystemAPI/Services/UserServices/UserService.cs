@@ -3,6 +3,7 @@ using CRMSystemAPI.Exceptions;
 using CRMSystemAPI.Models.DatabaseModels;
 using CRMSystemAPI.Models.DataTransferModels.UserTransferModels;
 using CRMSystemAPI.Services.AuthServices;
+using CRMSystemAPI.Services.EmailServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -13,16 +14,16 @@ namespace CRMSystemAPI.Services.UserServices
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IAuthService _authService;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
+        private readonly IEmailSender _emailSender;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, UserManager<User> userManager, IAuthService authService)
+        public UserService(IUserRepository userRepository, IMapper mapper, UserManager<User> userManager, IEmailSender emailSender)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _userManager = userManager;
-            _authService = authService;
+            _emailSender = emailSender;
         }
 
         public async Task<IEnumerable<UserReadDto>> GetUsersAsync()
@@ -60,7 +61,8 @@ namespace CRMSystemAPI.Services.UserServices
                 await _userRepository.AddUserAsync(user);
                 await _userRepository.AddUserToClientRole(user);
 
-                await _authService.SendWelcomeEmailAsync(user, password);
+                await _emailSender.SendWelcomeEmailAsync(user,password);
+
             }
             catch (DbUpdateException ex)
             {
