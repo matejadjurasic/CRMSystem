@@ -1,5 +1,7 @@
-﻿using CRMSystemAPI.Models.DatabaseModels;
+﻿using CRMSystemAPI.Configuration;
+using CRMSystemAPI.Models.DatabaseModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,13 +12,13 @@ namespace CRMSystemAPI.Services.TokenServices
 {
     public class TokenService : ITokenService
     {
-        private readonly IConfiguration _configuration;
         private readonly UserManager<User> _userManager;
+        private readonly JwtSettings _jwtSettings;
 
-        public TokenService(IConfiguration configuration, UserManager<User> userManager)
+        public TokenService(UserManager<User> userManager, IOptions<JwtSettings> jwtSettings)
         {
-            _configuration = configuration;
             _userManager = userManager;
+            _jwtSettings = jwtSettings.Value;
         }
 
         public async Task<string> GenerateToken(User user)
@@ -38,14 +40,14 @@ namespace CRMSystemAPI.Services.TokenServices
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Key));
             var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
+            issuer: _jwtSettings.Issuer,
+            audience: _jwtSettings.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(int.Parse(_configuration["Jwt:ExpireMinutes"])),
+            expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpireMinutes),
             signingCredentials: signIn
             );
 
