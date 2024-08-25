@@ -18,11 +18,6 @@ namespace CRMSystemAPI.Data
             base.OnModelCreating(modelBuilder);
 
 
-            int ADMIN_ID = 1;
-            int ADMIN_ROLE_ID = 1;
-            int CLIENT_ROLE_ID = 2;
-
-
             modelBuilder.Entity<User>(b =>
             {
                 b.HasMany(u => u.Projects)
@@ -49,43 +44,6 @@ namespace CRMSystemAPI.Data
                 .IsRequired();
             });
 
-            modelBuilder.Entity<Role>().HasData(
-                    new Role
-                    {
-                        Name = "Admin",
-                        Id = ADMIN_ROLE_ID,
-                        NormalizedName = "ADMIN",
-                        ConcurrencyStamp = ADMIN_ROLE_ID.ToString()
-                    },
-                    new Role
-                    {
-                        Name = "Client",
-                        Id = CLIENT_ROLE_ID,
-                        NormalizedName = "CLIENT",
-                        ConcurrencyStamp = CLIENT_ROLE_ID.ToString()
-                    }
-            );
-
-            var appUser = new User
-            {
-                Id = ADMIN_ID,
-                Email = "admin@email.com",
-                Name = "Admin",
-                UserName = "admin",
-                NormalizedEmail = "ADMIN@EMAIL.COM",
-                NormalizedUserName = "ADMIN"
-            };
-
-            PasswordHasher<User> ph = new PasswordHasher<User>();
-            appUser.PasswordHash = ph.HashPassword(appUser, "admin123");
-
-            modelBuilder.Entity<User>().HasData(appUser);
-
-            modelBuilder.Entity<UserRole>().HasData(new UserRole
-            {
-                RoleId = ADMIN_ROLE_ID,
-                UserId = ADMIN_ID
-            });
         }
     }
 }

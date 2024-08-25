@@ -1,8 +1,6 @@
 ﻿namespace CRMSystemAPI.Models.DataTransferModels.UserTransferModels
 {
-    public class UserUpdateDto
+    public class UserUpdateDto : UserBaseDto
     {
-        public string Name { get; set; } 
-        public string Email { get; set; } 
     }
 }

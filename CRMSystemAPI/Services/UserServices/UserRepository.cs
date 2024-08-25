@@ -1,6 +1,8 @@
 ﻿using CRMSystemAPI.Data;
+using CRMSystemAPI.Migrations;
 using CRMSystemAPI.Models.DatabaseModels;
 using CRMSystemAPI.Models.Enums;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRMSystemAPI.Services.UserServices
@@ -8,10 +10,12 @@ namespace CRMSystemAPI.Services.UserServices
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public UserRepository(AppDbContext context)
+        public UserRepository(AppDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<User?> GetUserByIdAsync(int id)
@@ -58,12 +62,7 @@ namespace CRMSystemAPI.Services.UserServices
 
         public async Task AddUserToClientRole(User user)
         {
-            _context.UserRoles.Add(new UserRole
-            {
-                UserId = user.Id,
-                RoleId = (int)UserRoles.Client
-            });
-            await _context.SaveChangesAsync();
+            await _userManager.AddToRoleAsync(user, UserRoles.Client.ToString()); 
         }
     }
 }
