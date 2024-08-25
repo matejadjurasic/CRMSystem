@@ -2,6 +2,8 @@
 using System.Net;
 using CRMSystemAPI.Models.DatabaseModels;
 using Microsoft.AspNetCore.Identity;
+using CRMSystemAPI.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace CRMSystemAPI.Services.EmailServices
 {
@@ -9,25 +11,29 @@ namespace CRMSystemAPI.Services.EmailServices
     {
         private readonly IConfiguration _configuration;
         private readonly UserManager<User> _userManager;
+        private readonly EmailSettings _emailSettings;
+        private readonly AppSettings _appSettings;
 
-        public EmailSender(IConfiguration configuration, UserManager<User> userManager)
+        public EmailSender(IConfiguration configuration, UserManager<User> userManager, IOptions<EmailSettings> emailOptions, IOptions<AppSettings> appOptions)
         {
             _configuration = configuration;
+            _emailSettings = emailOptions.Value;
+            _appSettings = appOptions.Value;
             _userManager = userManager;
         }
 
         public Task SendEmailAsync(string email, string subject, string message)
         {
-            var smtpClient = new SmtpClient(_configuration["Email:SmtpServer"])
+            var smtpClient = new SmtpClient(_emailSettings.SmtpServer)
             {
-                Port = int.Parse(_configuration["Email:SmtpPort"]),
-                Credentials = new NetworkCredential(_configuration["Email:Username"], _configuration["Email:Password"]),
+                Port = _emailSettings.SmtpPort,
+                Credentials = new NetworkCredential(_emailSettings.Username, _emailSettings.Password),
                 EnableSsl = true,
             };
 
             var mailMessage = new MailMessage
             {
-                From = new MailAddress(_configuration["Email:FromAddress"]),
+                From = new MailAddress(_emailSettings.FromAddress),
                 Subject = subject,
                 Body = message,
                 IsBodyHtml = true,
@@ -42,7 +48,7 @@ namespace CRMSystemAPI.Services.EmailServices
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = Uri.EscapeDataString(token);
             var baseUrl = _configuration["App:BaseUrl"];
-            var resetLink = $"{baseUrl}/auth/reset-password?token={encodedToken}&email={user.Email}";
+            var resetLink = $"{_appSettings.BaseUrl}/auth/reset-password?token={encodedToken}&email={user.Email}";
 
             var subject = "Welcome to Our Service";
             var body = $@"
