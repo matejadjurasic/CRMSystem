@@ -49,7 +49,7 @@ namespace CRMSystem.Infrastructure.Services
         {
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = Uri.EscapeDataString(token);
-            var resetLink = $"{_appSettings.BaseUrl}/auth/reset-password?token={encodedToken}&email={user.Email}";
+            var resetLink = $"{_appSettings.BaseUrl}reset-password?token={encodedToken}&email={user.Email}";
 
             var subject = "Welcome to Our Service";
             var body = $@"

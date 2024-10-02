@@ -1,32 +1,56 @@
 import React from 'react';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import RequireAuth from './components/auth/RequireAuth';
-import Login from './components/auth/Login';
-import { useAuth } from './hooks/useAuth';
 import AdminDash from './components/dashboards/AdminDash';
+import UserDash from './components/dashboards/UserDash';
+import { DashboardRedirect } from './components/common/DashboardRedirect';
+import { USER_ROLES, ROUTES } from './lib/constants';
+import ChangePassword from './components/auth/ChangePassword';
+import { useAuth } from './hooks/useAuth';
+import Login from './components/auth/Login';
 
 function App() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   return (
     <Router>
       <Routes>
-        {/* Protected Route */}
+        {/* Protected Routes */}
         <Route
-          path="/"
+          path={ROUTES.ADMIN_DASHBOARD}
           element={
-            <RequireAuth>
+            <RequireAuth allowedRoles={[USER_ROLES.ADMIN]}>
               <AdminDash />
             </RequireAuth>
           }
-      />
-      {/* Public Routes */}
-      <Route
-        path="/login"
-        element={!token ? <Login /> : <Navigate to="/" replace />}
-      />
-      {/* Catch-all Route */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+        />
+        <Route
+          path={ROUTES.USER_DASHBOARD}
+          element={
+            <RequireAuth allowedRoles={[USER_ROLES.CLIENT]}>
+              <UserDash />
+            </RequireAuth>
+          }
+        />
+        {/* Public Routes */}
+        <Route
+          path={ROUTES.LOGIN}
+          element={!token ? <Login /> :<DashboardRedirect token={token} user={user} />}
+        />
+        <Route 
+          path={ROUTES.CHANGE_PASSWORD} 
+          element={<ChangePassword />} 
+        />
+        {/* Root path redirect */}
+        <Route 
+          path="/" 
+          element={<DashboardRedirect token={token} user={user} />} 
+        />
+        {/* Catch-all Route */}
+        <Route 
+          path="*" 
+          element={<Navigate to="/" replace />} 
+        />
       </Routes>
     </Router>
   );

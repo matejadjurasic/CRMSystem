@@ -31,7 +31,7 @@ namespace CRMSystem.API.Controllers
             return Ok(userProjects);
         }
 
-        // GET: api/Projects
+        // GET: api/Projects/all 
         [Authorize(Roles = "Admin")]
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<ProjectReadDto>>> GetAllProjects()
