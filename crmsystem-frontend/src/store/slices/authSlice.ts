@@ -33,7 +33,7 @@ export const login = createAsyncThunk<User, LoginCredentials, { rejectValue: API
 );
 
 export const resetPassword = createAsyncThunk<
-  { message: string },
+  string,
   { token: string; email: string; newPassword: string },
   { rejectValue: APIError }
 >('auth/resetPassword', async ({ token, email, newPassword }, { rejectWithValue }) => {
@@ -90,7 +90,7 @@ const authSlice = createSlice({
         })
         .addCase(resetPassword.fulfilled, (state, action) => {
             state.loading = false;
-            state.successMessage = action.payload.message;
+            state.successMessage = action.payload;
         })
         .addCase(resetPassword.rejected, (state, action) => {
             state.loading = false;
