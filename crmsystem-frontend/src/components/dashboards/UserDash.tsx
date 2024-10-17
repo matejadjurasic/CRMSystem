@@ -40,13 +40,16 @@ export default function UserDash() {
 
   const sidebarItems = [
     { label: 'Add Project', onClick: () => setIsAddModalOpen(true) },
+  ];
+
+  const sidebarBottomItems = [
     { label: 'Logout', onClick: handleLogout },
   ];
 
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar title={`Welcome, ${user?.name || ''}!`} items={sidebarItems} />
+      <Sidebar title={`Welcome, ${user?.name || ''}!`} items={sidebarItems} bottomButtons={sidebarBottomItems} />
 
       <div className="flex-1 p-8 overflow-auto">
         <h1 className="text-2xl font-bold mb-4">Your Projects</h1>

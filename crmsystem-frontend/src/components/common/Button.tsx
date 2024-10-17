@@ -8,9 +8,9 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const buttonStyles = {
   base: 'w-full px-4 py-2 font-semibold rounded-md focus:outline-none focus:ring',
   variants: {
-    primary: 'text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-200',
-    secondary: 'text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-gray-200',
-    danger: 'text-white bg-red-600 hover:bg-red-700 focus:ring-red-200',
+    primary: 'text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-200 mt-4',
+    secondary: 'text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-gray-200 mt-4',
+    danger: 'text-white bg-red-600 hover:bg-red-700 focus:ring-red-200 mt-4',
   },
   loading: 'opacity-50 cursor-not-allowed',
 };

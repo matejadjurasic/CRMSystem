@@ -10,10 +10,11 @@ interface SidebarItem {
 interface SidebarProps {
   title: string;
   items: SidebarItem[];
+  bottomButtons?: SidebarItem[];
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ title, items }) => (
-  <div className="w-64 bg-white shadow-md">
+const Sidebar: React.FC<SidebarProps> = ({ title, items, bottomButtons }) => (
+  <div className="flex flex-col justify-between h-full w-64 bg-white shadow-md">
     <div className="p-4">
       <h2 className="text-xl font-semibold">{title}</h2>
     </div>
@@ -22,12 +23,25 @@ const Sidebar: React.FC<SidebarProps> = ({ title, items }) => (
         <Button
           key={index}
           onClick={item.onClick}
-          className={`w-full mb-2 ${item.isActive ? 'bg-blue-600' : ''}`}
+          className={`w-full mb-2 ${item.isActive ? 'bg-gray-300' : ''}`}
         >
           {item.label}
         </Button>
       ))}
     </nav>
+    {bottomButtons && (
+      <div className="mt-auto p-4 border-t">
+        {bottomButtons.map((button, index) => (
+          <Button
+            key={index}
+            onClick={button.onClick}
+            variant='danger'
+          >
+            {button.label}
+          </Button>
+        ))}
+      </div>
+    )}
   </div>
 );
 

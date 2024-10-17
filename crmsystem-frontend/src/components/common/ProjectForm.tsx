@@ -39,11 +39,11 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, onChange, onSubmit, 
       onChange={(e) => onChange('status', e.target.value as Project['status'])}
     >
       <option value="Open">Open</option>
-      <option value="In Progress">In Progress</option>
+      <option value="InProgress">In Progress</option>
       <option value="Completed">Completed</option>
       <option value="Cancelled">Cancelled</option>
     </select>
-    <Button onClick={onSubmit} disabled={isLoading} className="mt-4 w-full">
+    <Button onClick={onSubmit} disabled={isLoading} variant='primary'>
       {isLoading ? 'Loading...' : submitText}
     </Button>
   </>

@@ -76,6 +76,9 @@ export default function AdminDash() {
     },
     { label: 'Create User', onClick: () => setIsAddUserModalOpen(true) },
     { label: 'Create Project', onClick: () => setIsAddProjectModalOpen(true) },
+  ];
+
+  const sidebarBottomItems = [
     { label: 'Logout', onClick: handleLogout },
   ];
 
@@ -83,7 +86,7 @@ export default function AdminDash() {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar title="Admin Dashboard" items={sidebarItems} />
+      <Sidebar title="Admin Dashboard" items={sidebarItems} bottomButtons={sidebarBottomItems} />
 
       <div className="flex-1 p-8 overflow-auto">
         <h1 className="text-2xl font-bold mb-4">
