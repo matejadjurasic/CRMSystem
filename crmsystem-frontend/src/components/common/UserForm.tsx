@@ -26,7 +26,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onChange, onSubmit, isLoading
       onChange={(e) => onChange('email', e.target.value)}
       required
     />
-    <Button type="submit" disabled={isLoading} className="w-full">
+    <Button type="submit" disabled={isLoading} variant='primary'>
       {isLoading ? 'Loading...' : submitText}
     </Button>
   </form>

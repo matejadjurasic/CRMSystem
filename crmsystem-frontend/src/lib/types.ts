@@ -25,7 +25,7 @@ export type Project = {
     title: string;
     description: string;
     deadline: string;
-    status: 'Open' | 'In Progress' | 'Completed' | 'Cancelled';
+    status: 'Open' | 'InProgress' | 'Completed' | 'Cancelled';
 }
 
 export type ProjectState = {

@@ -10,7 +10,7 @@ export const useProjects = (isAdmin = false) => {
   const [newProject, setNewProject] = useState<Omit<Project, 'id'>>({
     title: '',
     description: '',
-    deadline: '',
+    deadline: new Date().toISOString().split('T')[0],
     status: 'Open'
   });
   const [editingProject, setEditingProject] = useState<Project | null>(null);
@@ -27,7 +27,7 @@ export const useProjects = (isAdmin = false) => {
 
   const handleCreateProject = () => {
     dispatch(createProject(newProject));
-    setNewProject({ title: '', description: '', deadline: '', status: 'Open' });
+    setNewProject({ title: '', description: '', deadline: new Date().toISOString().split('T')[0], status: 'Open' });
   };
 
   const handleUpdateProject = () => {
