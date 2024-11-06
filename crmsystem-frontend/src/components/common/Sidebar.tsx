@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Button from './Button';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 interface SidebarItem {
   label: string;
@@ -40,20 +42,20 @@ const Sidebar: React.FC<SidebarProps> = ({ title, categories }) => {
             >
               <span className="flex items-center">
                 {openCategories.includes(index) ? (
-                  <span className="mr-2">▼</span> 
+                  <KeyboardArrowDownIcon/> 
                 ) : (
-                  <span className="mr-2">►</span> 
+                  <KeyboardArrowRightIcon/> 
                 )}
               {category.label}
               </span>
             </Button>
             {openCategories.includes(index) && (
-              <div className="ml-4">
+              <div className="flex flex-col ml-4 mr-2">
                 {category.members.map((member, memberIndex) => (
                   <Button
                     key={memberIndex}
                     onClick={member.onClick}
-                    className={`w-full mb-2 ${member.isActive ? 'bg-gray-300' : ''}`}
+                    className={`w-full mb-2 rounded-lg hover:bg-gray-200 ${member.isActive ? 'bg-green-300 text-green-900 hover:bg-green-400' : ''}`}
                   >
                     {member.label}
                   </Button>
