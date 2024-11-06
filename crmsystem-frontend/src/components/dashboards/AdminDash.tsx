@@ -114,7 +114,7 @@ export default function AdminDash() {
         isGraphView={activeView === 'graph'} 
         onToggleView={() => setActiveView('adminProjects')}
       />
-      <div className="flex h-full">
+      <div className="flex h-full overflow-hidden">
       {activeView !== 'graph' && <Sidebar title="Admin Dashboard" categories={sidebarItems} />}
         <div className="flex-1 p-8 overflow-auto">
           <h1 className="text-2xl font-bold mb-4">

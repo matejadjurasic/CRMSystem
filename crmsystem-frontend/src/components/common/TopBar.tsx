@@ -69,7 +69,7 @@ const TopBar: React.FC<TopBarProps> = ({ workspaceName, onEditUser, onLogout, on
             </Button>
             <Button 
                 onClick={onLogout} 
-                className="block w-full text-left px-4 py-2 hover:bg-gray-200">
+                className="text-red-600 block w-full text-left px-4 py-2 hover:bg-gray-200">
                 Logout
             </Button>
         </Dropdown>

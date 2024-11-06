@@ -9,7 +9,7 @@ interface ProjectListProps {
 }
 
 const ProjectList: React.FC<ProjectListProps> = ({ projects, onEdit, onDelete }) => (
-  <div className="max-h-screen overflow-y-auto">
+  <div className=" overflow-y-auto">
     {projects.map((project) => (
       <ProjectCard
         key={project.id}
